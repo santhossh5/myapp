@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:myapp/models/areatostreet.dart';
 import 'package:myapp/models/customer.dart';
-import 'package:myapp/services/database_service.dart';
+//import 'package:myapp/services/database_service.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:myapp/services/firebase_service.dart';
 
 class Adduser extends StatefulWidget {
   final Customer? customer;
@@ -19,7 +20,8 @@ class _AdduserState extends State<Adduser> {
   _AdduserState(this.customer, this.appbarTitle);
   Customer? customer;
   String? appbarTitle;
-  DatabaseService _databaseService = DatabaseService.instance;
+  //DatabaseService _databaseService = DatabaseService.instance;
+  FirebaseService _firebaseService = FirebaseService();
   final _formkey = GlobalKey<FormState>();
   TextEditingController namecontroller = TextEditingController();
   String? streetcontroller;
@@ -172,7 +174,8 @@ class _AdduserState extends State<Adduser> {
           customer!.package = packagecontroller.text;
         }
 
-        _databaseService.addCustomer(customer!);
+        //_databaseService.addCustomer(customer!);
+        _firebaseService.addCustomer(customer!);
 
         Navigator.pop(context);
       } else {

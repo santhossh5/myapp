@@ -1,6 +1,6 @@
 class Bills {
-  int? billId;
-  int cusId;
+  String? billId;
+  String cusId;
   String date;
   int amt;
 

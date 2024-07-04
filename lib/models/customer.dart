@@ -1,5 +1,5 @@
 class Customer {
-  int? cusId;
+  String? cusId;
   String name;
   String area;
   String street;

@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "145134409971",
+    "project_id": "titanium-diode-379504",
+    "storage_bucket": "titanium-diode-379504.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:145134409971:android:f0b7cca6da9d4783fc3f86",
+        "android_client_info": {
+          "package_name": "com.example.ap"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCnMURvRgorSK3jxZ_eqXxLMENtqou8fKI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:145134409971:android:6daf197fd39a8cf1fc3f86",
+        "android_client_info": {
+          "package_name": "com.example.myapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCnMURvRgorSK3jxZ_eqXxLMENtqou8fKI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

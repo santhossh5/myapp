@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/models/customer.dart';
 import 'package:myapp/pages/addUser.dart';
-import 'package:myapp/services/database_service.dart';
+//import 'package:myapp/services/database_service.dart';
+import 'package:myapp/services/firebase_service.dart';
 
 class myHome extends StatefulWidget {
   const myHome({super.key});
@@ -11,7 +12,8 @@ class myHome extends StatefulWidget {
 }
 
 class _myHomeState extends State<myHome> {
-  DatabaseService _databaseService = DatabaseService.instance;
+  //DatabaseService _databaseService = DatabaseService.instance;
+  FirebaseService _firebaseService = FirebaseService();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,8 +60,8 @@ class _myHomeState extends State<myHome> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          setState(() {
-            _databaseService.removeDatabase();
+          setState(() async {
+            //_databaseService.removeDatabase();
           });
         },
         child: Icon(Icons.playlist_add_outlined),
