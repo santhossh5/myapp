@@ -173,3 +173,98 @@
 //     _db = null; // Reset the _db variable so it can be reinitialized
 //   }
 // }
+/*
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:myapp/models/bills.dart';
+import 'package:myapp/models/customer.dart';
+
+const String Customers_collection = "customers";
+const String Bills_collection = "Bills";
+
+class FirebaseService {
+  final _firestore = FirebaseFirestore.instance;
+
+  late final CollectionReference<Customer> _customerCollection;
+  late final CollectionReference<Bills> _billCollection;
+
+  FirebaseService() {
+    _customerCollection = _firestore.collection(Customers_collection).withConverter<Customer>(
+      fromFirestore: (snapshots, _) => Customer.fromMap(snapshots.data()!),
+      toFirestore: (customer, _) => customer.toMap(),
+    );
+
+    _billCollection = _firestore.collection(Bills_collection).withConverter<Bills>(
+      fromFirestore: (snapshots, _) => Bills.fromMap(snapshots.data()!),
+      toFirestore: (bill, _) => bill.toMap(),
+    );
+  }
+
+  Future<void> addCustomer(Customer customer) async {
+    try {
+      await _customerCollection.doc(customer.cusId).set(customer);
+    } catch (e) {
+      print("Error adding customer: $e");
+    }
+  }
+
+  Future<void> addBill(Bills bill) async {
+    try {
+      await _billCollection.add(bill);
+    } catch (e) {
+      print("Error adding bill: $e");
+    }
+  }
+
+  Future<Customer?> getCustomerById(String id) async {
+    try {
+      DocumentSnapshot<Customer> snapshot = await _customerCollection.doc(id).get();
+      return snapshot.data();
+    } catch (e) {
+      print("Error getting customer: $e");
+      return null;
+    }
+  }
+
+  Future<List<Bills>> getBillsByCusId(String cusId) async {
+    try {
+      QuerySnapshot<Bills> querySnapshot = await _billCollection.where('customerId', isEqualTo: cusId).get();
+      return querySnapshot.docs.map((doc) => doc.data()!).toList();
+    } catch (e) {
+      print("Error getting bills: $e");
+      return [];
+    }
+  }
+
+  Future<List<Customer>> getCustomers() async {
+    try {
+      QuerySnapshot<Customer> querySnapshot = await _customerCollection.get();
+      return querySnapshot.docs.map((doc) => doc.data()!).toList();
+    } catch (e) {
+      print("Error getting customers: $e");
+      return [];
+    }
+  }
+
+  Future<List<Customer>> getCustomersByStreet(String street) async {
+    try {
+      QuerySnapshot<Customer> querySnapshot = await _customerCollection.where('street', isEqualTo: street).get();
+      return querySnapshot.docs.map((doc) => doc.data()!).toList();
+    } catch (e) {
+      print("Error getting customers by street: $e");
+      return [];
+    }
+  }
+
+  Future<void> deleteCustomer(String id) async {
+    try {
+      await _customerCollection.doc(id).delete();
+      QuerySnapshot<Bills> billsSnapshot = await _billCollection.where('customerId', isEqualTo: id).get();
+      for (DocumentSnapshot<Bills> billDoc in billsSnapshot.docs) {
+        await billDoc.reference.delete();
+      }
+    } catch (e) {
+      print("Error deleting customer: $e");
+    }
+  }
+}
+*/

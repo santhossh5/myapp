@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:myapp/models/areatostreet.dart';
 import 'package:myapp/models/customer.dart';
+import 'package:myapp/pages/listUsers.dart';
 //import 'package:myapp/services/database_service.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
@@ -38,7 +39,7 @@ class _AdduserState extends State<Adduser> {
       areacontroller = customer!.area;
       streetNames = streets(areacontroller!);
       streetcontroller = customer!.street;
-      packagecontroller.text = customer!.package;
+      packagecontroller.text = customer!.package.toString();
     }
     return Scaffold(
         appBar: AppBar(
@@ -121,7 +122,7 @@ class _AdduserState extends State<Adduser> {
                   },
                   controller: packagecontroller,
                   keyboardType: TextInputType.number,
-                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                  //inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   decoration: InputDecoration(
                     labelText: "Package",
                     border: OutlineInputBorder(),
@@ -140,7 +141,7 @@ class _AdduserState extends State<Adduser> {
                         onPressed: () {
                           setState(() {
                             if (_formkey.currentState!.validate()) {
-                              btn_clicked();
+                              btnClicked();
                             }
                           });
                         },
@@ -157,31 +158,36 @@ class _AdduserState extends State<Adduser> {
         ));
   }
 
-  void btn_clicked() {
-    setState(() {
-      if (areacontroller != null && streetcontroller != null) {
-        if (customer == null) {
-          customer = Customer(
-            name: namecontroller.text,
-            area: areacontroller!,
-            street: streetcontroller!,
-            package: packagecontroller.text,
-          );
-        } else {
-          customer!.name = namecontroller.text;
-          customer!.area = areacontroller!;
-          customer!.street = streetcontroller!;
-          customer!.package = packagecontroller.text;
-        }
-
-        //_databaseService.addCustomer(customer!);
-        _firebaseService.addCustomer(customer!);
-
-        Navigator.pop(context);
+  void btnClicked() async {
+    if (areacontroller != null && streetcontroller != null) {
+      if (widget.customer == null) {
+        int cusid = await _firebaseService.getNextCustomerId();
+        var newCustomer = Customer(
+          cusId: cusid,
+          name: namecontroller.text,
+          area: areacontroller!,
+          street: streetcontroller!,
+          package: double.parse(packagecontroller.text),
+        );
+        setState(() {
+          Navigator.pop(context);
+        });
+        await _firebaseService.addCustomer(newCustomer);
       } else {
+        widget.customer!.name = namecontroller.text;
+        widget.customer!.area = areacontroller!;
+        widget.customer!.street = streetcontroller!;
+        widget.customer!.package = double.parse(packagecontroller.text);
+        await _firebaseService.updateCustomer(widget.customer!);
+        setState(() {
+          Navigator.push(context, MaterialPageRoute(builder: (context) => listUsers(street: customer!.street)));
+        });
+      }
+    } else {
+      setState(() {
         if (areacontroller == null) aError = 1;
         if (streetcontroller == null) sError = 1;
-      }
-    });
+      });
+    }
   }
 }

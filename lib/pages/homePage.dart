@@ -58,14 +58,6 @@ class _myHomeState extends State<myHome> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          setState(() async {
-            //_databaseService.removeDatabase();
-          });
-        },
-        child: Icon(Icons.playlist_add_outlined),
-      ),
     );
   }
 }

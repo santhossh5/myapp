@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:myapp/models/customer.dart';
 import 'package:myapp/models/bills.dart';
@@ -14,6 +15,7 @@ class Listbills extends StatefulWidget {
 
 class _ListbillsState extends State<Listbills> {
   //final DatabaseService _databaseService = DatabaseService.instance;
+  FirebaseService _firebaseService = FirebaseService();
   _ListbillsState(this.customer);
   Customer customer;
   @override
@@ -23,33 +25,39 @@ class _ListbillsState extends State<Listbills> {
         backgroundColor: Theme.of(context).colorScheme.primaryContainer,
         title: const Text('Bills'),
       ),
-      // body: FutureBuilder(
-      //     future: _databaseService.getBillsByCusId(customer.cusId!),
-      //     builder: (context, snapshot) {
-      //       return ListView.builder(
-      //           itemCount: snapshot.data?.length ?? 0,
-      //           itemBuilder: (context, index) {
-      //             Bills bill = snapshot.data![index];
-      //             return Card(
-      //               elevation: 5,
-      //               margin: EdgeInsets.all(7),
-      //               color:
-      //                   Theme.of(context).colorScheme.surfaceContainerHighest,
-      //               child: Column(
-      //                 children: [
-      //                   Text('Date ${bill.date}'),
-      //                   Text(
-      //                     'Amount: ${bill.amt}',
-      //                     style: TextStyle(fontSize: 20),
-      //                   ),
-      //                   ElevatedButton(
-      //                     style: ElevatedButton.styleFrom(backgroundColor: Color.fromARGB(255, 4, 116, 82)),
-      //                     onPressed: () {}, child: Text('Bill',style: TextStyle(color: Colors.white),)),
-      //                 ],
-      //               ),
-      //             );
-      //           });
-      //     }),
+      body: FutureBuilder(
+          future: _firebaseService.getBillsByCusId(customer.cusId!),
+          builder: (context, snapshot) {
+            return ListView.builder(
+                itemCount: snapshot.data?.length ?? 0,
+                itemBuilder: (context, index) {
+                  Bills bill = snapshot.data![index];
+                  return Card(
+                    elevation: 5,
+                    margin: EdgeInsets.all(7),
+                    color:
+                        Theme.of(context).colorScheme.surfaceContainerHighest,
+                    child: Column(
+                      children: [
+                        Text('Date ${bill.date}'),
+                        Text(
+                          'Amount: ${bill.amt}',
+                          style: TextStyle(fontSize: 20),
+                        ),
+                        ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor:
+                                    Color.fromARGB(255, 4, 116, 82)),
+                            onPressed: () {},
+                            child: Text(
+                              'Bill',
+                              style: TextStyle(color: Colors.white),
+                            )),
+                      ],
+                    ),
+                  );
+                });
+          }),
     );
   }
 }

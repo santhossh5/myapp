@@ -1,14 +1,14 @@
 class Bills {
-  String? billId;
-  String cusId;
+  int? billId;
+  int cusId;
   String date;
-  int amt;
+  double amt;
 
   Bills({this.billId, required this.cusId, required this.date, required this.amt});
 
   Map<String, dynamic> toMap() {
     var map = <String, dynamic>{
-      'customerId': cusId,
+      'cusId': cusId,
       'date': date,
       'amount': amt,
     };
@@ -20,8 +20,8 @@ class Bills {
 
   // Extract a Customer object from a Map object
   Bills.fromMap(Map<String, dynamic> map)
-      : cusId = map['customerId'],
+      : cusId = map['cusId'],
         billId = map['billID'],
         date = map['date'],
-        amt = map['amount'].toInt();
+        amt = double.parse(map['amount'].toString());
 }

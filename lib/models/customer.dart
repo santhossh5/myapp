@@ -1,9 +1,9 @@
 class Customer {
-  String? cusId;
+  int? cusId;
   String name;
   String area;
   String street;
-  String package;
+  double package;
 
   Customer(
       {this.cusId,
@@ -28,9 +28,9 @@ class Customer {
 
   // Extract a Customer object from a Map object
   Customer.fromMap(Map<String, dynamic> map)
-      : cusId = map['cusId'],
+      : cusId = map['id'],
         name = map['name'],
         area = map['area'],
         street = map['street'],
-        package = map['package'];
+        package = double.parse(map['package'].toString());
 }
