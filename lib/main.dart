@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/pages/homePage.dart';
-import 'package:myapp/pages/addUser.dart';
 import 'package:myapp/pages/showUser.dart';
+import 'package:myapp/pages/loginPage.dart';
+import 'package:myapp/pages/addWorker.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
@@ -41,7 +42,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.tealAccent),
         useMaterial3: true,
       ),
-      home: myHome(),
+      home: LoginPage(),
       routes: {
         '/homepage': (context) => const myHome(),
         '/selectstreet': (context) => const selectStreet(),

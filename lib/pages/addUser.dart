@@ -4,8 +4,6 @@ import 'package:myapp/models/areatostreet.dart';
 import 'package:myapp/models/customer.dart';
 import 'package:myapp/pages/listUsers.dart';
 //import 'package:myapp/services/database_service.dart';
-import 'package:sqflite/sqflite.dart';
-import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:myapp/services/firebase_service.dart';
 
 class Adduser extends StatefulWidget {
@@ -161,9 +159,9 @@ class _AdduserState extends State<Adduser> {
   void btnClicked() async {
     if (areacontroller != null && streetcontroller != null) {
       if (widget.customer == null) {
-        int cusid = await _firebaseService.getNextCustomerId();
+        //int cusid = await _firebaseService.getNextCustomerId();
         var newCustomer = Customer(
-          cusId: cusid,
+          //cusId: cusid,
           name: namecontroller.text,
           area: areacontroller!,
           street: streetcontroller!,

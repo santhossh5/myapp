@@ -1,4 +1,3 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:myapp/models/customer.dart';
 import 'package:myapp/models/bills.dart';
@@ -6,7 +5,7 @@ import 'package:myapp/models/bills.dart';
 import 'package:myapp/services/firebase_service.dart';
 
 class Listbills extends StatefulWidget {
-  Listbills({required this.customer});
+  Listbills({super.key, required this.customer});
   Customer customer;
 
   @override

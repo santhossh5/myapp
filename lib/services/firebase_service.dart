@@ -1,15 +1,18 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:myapp/models/bills.dart';
 import 'package:myapp/models/customer.dart';
+import 'package:myapp/models/worker.dart';
 
 const String Customers_collection = "customers";
 const String Bills_collection = "Bills";
+const String Workers_collection = "Workers";
 
 class FirebaseService {
   final _firestore = FirebaseFirestore.instance;
 
   late final CollectionReference _customer;
   late final CollectionReference _bill;
+  late final CollectionReference _worker;
 
   FirebaseService() {
     _customer =
@@ -23,11 +26,15 @@ class FirebaseService {
               snapshots.data()!,
             ),
         toFirestore: (bill, _) => bill.toMap());
+    _worker = _firestore.collection(Workers_collection).withConverter<Worker>(
+        fromFirestore: (snapshots, _) => Worker.fromMap(snapshots.data()!),
+        toFirestore: (worker, _) => worker.toMap());
   }
 
   Future<void> addCustomer(Customer customer) async {
     try {
-      await _customer.add(customer);
+      DocumentReference doc = await _customer.add(customer);
+      await doc.update({'id': doc.id});
     } catch (e) {
       print("Error adding customer: $e");
     }
@@ -54,7 +61,7 @@ class FirebaseService {
     try {
       QuerySnapshot<Customer> querySnapshot =
           await _customer.get() as QuerySnapshot<Customer>;
-      return querySnapshot.docs.map((doc) => doc.data()!).toList();
+      return querySnapshot.docs.map((doc) => doc.data()).toList();
     } catch (e) {
       print("Error getting customers: $e");
       return [];
@@ -66,14 +73,14 @@ class FirebaseService {
       QuerySnapshot<Customer> querySnapshot = await _customer
           .where('street', isEqualTo: street)
           .get() as QuerySnapshot<Customer>;
-      return querySnapshot.docs.map((doc) => doc.data()!).toList();
+      return querySnapshot.docs.map((doc) => doc.data()).toList();
     } catch (e) {
       print("Error getting customers by street: $e");
       return [];
     }
   }
 
-  Future<void> addBill(int billid, int cusid, double val) async {
+  Future<void> addBill(int billid, String cusid, double val) async {
     try {
       Bills bill =
           Bills(billId: billid, cusId: cusid, date: '2024-6-28', amt: val);
@@ -101,19 +108,19 @@ class FirebaseService {
     }
   }
 
-  Future<List<Bills>> getBillsByCusId(int id) async {
+  Future<List<Bills>> getBillsByCusId(String id) async {
     try {
       QuerySnapshot<Bills> querySnapshot = await _bill
           .where('cusId', isEqualTo: id)
           .get() as QuerySnapshot<Bills>;
-      return querySnapshot.docs.map((doc) => doc.data()!).toList();
+      return querySnapshot.docs.map((doc) => doc.data()).toList();
     } catch (e) {
       print("Error adding customer: $e");
       return [];
     }
   }
 
-  Future<void> deleteCustomer(int id) async {
+  Future<void> deleteCustomer(String id) async {
     try {
       QuerySnapshot<Customer> querySnapshot = await _customer
           .where('id', isEqualTo: id)
@@ -142,6 +149,52 @@ class FirebaseService {
       }
     } catch (e) {
       print("Error updating customer: $e");
+    }
+  }
+
+  void addWorker(Worker worker) async {
+    try {
+      DocumentReference doc = await _worker.add(worker);
+      await doc.update({'id': doc.id});
+    } catch (e) {
+      print("Error adding worker: $e");
+    }
+  }
+
+  Future<List<Worker>> getWorkers() async {
+    try {
+      QuerySnapshot<Worker> querySnapshot =
+          await _worker.get() as QuerySnapshot<Worker>;
+      return querySnapshot.docs.map((doc) => doc.data()).toList();
+    } catch (e) {
+      print("Error getting workers: $e");
+      return [];
+    }
+  }
+
+  Future<void> updateWorker(Worker worker) async {
+    try {
+      QuerySnapshot<Worker> querySnapshot = await _worker
+          .where('id', isEqualTo: worker.workerId!)
+          .get() as QuerySnapshot<Worker>;
+      if (querySnapshot.size > 0) {
+        await querySnapshot.docs.first.reference.set(worker);
+      } else {
+        print("Customer with id ${worker.workerId} not found.");
+      }
+    } catch (e) {
+      print("Error updating customer: $e");
+    }
+  }
+
+  Future<void> deleteWorker(Worker worker) async {
+    try {
+      QuerySnapshot<Worker> querySnapshot = await _worker
+          .where('id', isEqualTo: worker.workerId)
+          .get() as QuerySnapshot<Worker>;
+      querySnapshot.docs.first.reference.delete();
+    } catch (e) {
+      print("Error deleting worker: $e");
     }
   }
 }
