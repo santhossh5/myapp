@@ -138,6 +138,20 @@ class _WorkerListState extends State<WorkerList> {
           ),
           actions: [
             TextButton(
+                onPressed: () {
+                  setState(() {
+                    Navigator.pop(context);
+                    _firebaseService.deleteWorker(selectedWorker).then((_){
+                      fetchWorkers();
+                    });
+                  });
+                },
+                style: TextButton.styleFrom(backgroundColor: Colors.red),
+                child: Text(
+                  "Delete",
+                  style: TextStyle(color: Colors.white),
+                )),
+            TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -169,7 +183,7 @@ class _WorkerListState extends State<WorkerList> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-        title: Text("Workers"),
+        title: Text("Worker Details"),
       ),
       body: Column(
         children: [

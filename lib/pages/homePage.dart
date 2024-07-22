@@ -19,6 +19,7 @@ class _myHomeState extends State<myHome> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         backgroundColor: Theme.of(context).colorScheme.primaryContainer,
         centerTitle: true,
         title: const Text("Home"),
@@ -65,9 +66,15 @@ class _myHomeState extends State<myHome> {
                 },
                 style: ElevatedButton.styleFrom(fixedSize: Size(200, 50)),
                 child: Text(
-                  "Workers",
+                  "Worker Detail",
                   style: TextStyle(fontSize: 20),
-                ))
+                )),
+            SizedBox(
+              height: 10,
+            ),
+            ElevatedButton(onPressed: () {
+              
+            }, child: Text("Report"))
           ],
         ),
       ),

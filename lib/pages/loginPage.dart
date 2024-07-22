@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/pages/homePage.dart';
 import 'package:myapp/services/firebase_service.dart';
+import 'package:myapp/models/worker.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -12,7 +13,19 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   TextEditingController namecontroller = new TextEditingController();
   TextEditingController passwordcontroller = new TextEditingController();
+  FirebaseService _firebaseService = new FirebaseService();
   final _formkey = GlobalKey<FormState>();
+  List<Worker> workers = [];
+
+  @override
+  void initState() {
+    super.initState();
+    getworkers();
+  }
+
+  void getworkers() async {
+    workers = await _firebaseService.getWorkers();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -81,6 +94,41 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void btn_clidked() {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => myHome()));
+    String name = namecontroller.text;
+    String password = passwordcontroller.text;
+    if (name == "admin" && password == "admin") {
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => myHome()));
+    }
+    Worker? isValid = workers.firstWhere(
+      (worker) => worker.name == name && worker.password == password,
+      orElse: () => Worker(
+          name: '',
+          password: ''), // Return an empty Worker instance if not found
+    );
+
+    if (isValid.name.isNotEmpty && isValid.password.isNotEmpty) {
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => myHome()));
+    } else {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Invalid Credentials"),
+            content:
+                Text("The name or password is incorrect. Please try again."),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text("Close"),
+              ),
+            ],
+          );
+        },
+      );
+    }
   }
 }
