@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 import 'package:myapp/models/bills.dart';
 import 'package:myapp/models/customer.dart';
 import 'package:myapp/models/worker.dart';
@@ -80,12 +83,14 @@ class FirebaseService {
     }
   }
 
-  Future<void> addBill(int billid, String cusid, double val) async {
+  Future<void> addBill(String cusid, double val) async {
     try {
-      Bills bill =
-          Bills(billId: billid, cusId: cusid, date: '2024-6-28', amt: val);
-      print(bill);
-      await _bill.add(bill);
+      DateTime time = DateTime.now();
+      String t = DateFormat('yyyy-MM-dd').format(time);
+      Bills bill = Bills(cusId: cusid, date: t, status: false, amt: val);
+      DocumentReference doc = await _bill.add(bill);
+      print(cusid);
+      await doc.update({'billId': doc.id});
     } catch (e) {
       print("Error adding customer: $e");
     }
@@ -195,6 +200,30 @@ class FirebaseService {
       querySnapshot.docs.first.reference.delete();
     } catch (e) {
       print("Error deleting worker: $e");
+    }
+  }
+
+  Future<void> changeBillStatus(Bills bill) async {
+    try {
+      QuerySnapshot<Bills> querySnapshot = await _bill
+          .where('billId', isEqualTo: bill.billId)
+          .get() as QuerySnapshot<Bills>;
+      print('${querySnapshot.docs.first.reference}');
+      querySnapshot.docs.first.reference.update({'status': true});
+      print("change status");
+    } catch (e) {
+      print("Error updating bill status $e");
+    }
+  }
+
+  Future<void> deleteBill(String billid) async {
+    try {
+      QuerySnapshot<Bills> querySnapshot = await _bill
+          .where("billId", isEqualTo: billid)
+          .get() as QuerySnapshot<Bills>;
+      querySnapshot.docs.first.reference.delete();
+    } catch (e) {
+      print("Error deleting bill $e");
     }
   }
 }

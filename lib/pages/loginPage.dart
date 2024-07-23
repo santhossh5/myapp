@@ -37,10 +37,6 @@ class _LoginPageState extends State<LoginPage> {
             padding: EdgeInsets.all(8.0),
             shrinkWrap: true, // Makes the ListView take the space it needs
             children: [
-              TextButton(
-                onPressed: () {},
-                child: Text("data"),
-              ),
               TextFormField(
                 validator: (value) {
                   if (value!.isEmpty) {
@@ -65,6 +61,7 @@ class _LoginPageState extends State<LoginPage> {
                   return null;
                 },
                 controller: passwordcontroller,
+                obscureText: true,
                 decoration: const InputDecoration(
                   labelText: 'Password',
                   border: OutlineInputBorder(),
@@ -99,6 +96,7 @@ class _LoginPageState extends State<LoginPage> {
     if (name == "admin" && password == "admin") {
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => myHome()));
+      return;
     }
     Worker? isValid = workers.firstWhere(
       (worker) => worker.name == name && worker.password == password,

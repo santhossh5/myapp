@@ -38,20 +38,56 @@ class _ListbillsState extends State<Listbills> {
                         Theme.of(context).colorScheme.surfaceContainerHighest,
                     child: Column(
                       children: [
+                        Text('BILL ID ${bill.billId}'),
                         Text('Date ${bill.date}'),
                         Text(
                           'Amount: ${bill.amt}',
                           style: TextStyle(fontSize: 20),
                         ),
-                        ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                                backgroundColor:
-                                    Color.fromARGB(255, 4, 116, 82)),
-                            onPressed: () {},
-                            child: Text(
-                              'Bill',
-                              style: TextStyle(color: Colors.white),
-                            )),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              "Bill staus:",
+                              style: TextStyle(fontSize: 15),
+                            ),
+                            (bill.status)
+                                ? (Text(
+                                    "PAID",
+                                    style: TextStyle(
+                                        color: Colors.green,
+                                        fontWeight: FontWeight.bold),
+                                  ))
+                                : (Text(
+                                    "UNPAID",
+                                    style: TextStyle(
+                                        color: Colors.red,
+                                        fontWeight: FontWeight.bold),
+                                  )),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                    backgroundColor:
+                                        Color.fromARGB(255, 4, 116, 82)),
+                                onPressed: () async {
+                                  _firebaseService.changeBillStatus(bill).then((_) {
+                                    setState(() {
+                                      bill.status = true;
+                                    });
+                                  });
+                                },
+                                child: Text(
+                                  'Bill',
+                                  style: TextStyle(color: Colors.white),
+                                )),
+                                IconButton(onPressed: ()async{
+                                  
+                                }, icon: Icon(Icons.delete))
+                          ],
+                        ),
                       ],
                     ),
                   );

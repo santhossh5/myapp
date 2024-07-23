@@ -73,11 +73,8 @@ class _listUsersState extends State<listUsers> {
                                       child: Text('Bills')),
                                   ElevatedButton(
                                       onPressed: () async {
-                                        int billid = await _firebaseService
-                                            .getNextBillId();
                                         setState(() {
-                                          _firebaseService.addBill(
-                                              billid, customer.cusId!, 111);
+                                          _firebaseService.addBill(customer.cusId!, 111);
                                         });
                                       },
                                       child: Text('Add Bills')),

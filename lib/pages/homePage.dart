@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:myapp/models/customer.dart';
 import 'package:myapp/pages/addUser.dart';
 import 'package:myapp/pages/addWorker.dart';
+import 'package:myapp/pages/report.dart';
 //import 'package:myapp/services/database_service.dart';
-import 'package:myapp/services/firebase_service.dart';
+//import 'package:myapp/services/firebase_service.dart';
 
 class myHome extends StatefulWidget {
   const myHome({super.key});
@@ -14,7 +15,7 @@ class myHome extends StatefulWidget {
 
 class _myHomeState extends State<myHome> {
   //DatabaseService _databaseService = DatabaseService.instance;
-  FirebaseService _firebaseService = FirebaseService();
+  //FirebaseService _firebaseService = FirebaseService();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -72,9 +73,16 @@ class _myHomeState extends State<myHome> {
             SizedBox(
               height: 10,
             ),
-            ElevatedButton(onPressed: () {
-              
-            }, child: Text("Report"))
+            ElevatedButton(
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => Report()));
+                },
+                style: ElevatedButton.styleFrom(fixedSize: Size(200, 50)),
+                child: Text(
+                  "Report",
+                  style: TextStyle(fontSize: 20),
+                )),
           ],
         ),
       ),
