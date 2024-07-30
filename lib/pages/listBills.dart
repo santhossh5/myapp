@@ -17,6 +17,22 @@ class _ListbillsState extends State<Listbills> {
   FirebaseService _firebaseService = FirebaseService();
   _ListbillsState(this.customer);
   Customer customer;
+  List<Bills> bills = [];
+  @override
+  void initState() {
+    super.initState();
+    getbills();
+  }
+
+  void getbills() async {
+    List<Bills> fetchedBills =
+        await _firebaseService.getBillsByCusId(widget.customer.cusId!);
+    setState(() {
+      bills = fetchedBills;
+    });
+    print(bills.length);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,74 +40,78 @@ class _ListbillsState extends State<Listbills> {
         backgroundColor: Theme.of(context).colorScheme.primaryContainer,
         title: const Text('Bills'),
       ),
-      body: FutureBuilder(
-          future: _firebaseService.getBillsByCusId(customer.cusId!),
-          builder: (context, snapshot) {
-            return ListView.builder(
-                itemCount: snapshot.data?.length ?? 0,
-                itemBuilder: (context, index) {
-                  Bills bill = snapshot.data![index];
-                  return Card(
-                    elevation: 5,
-                    margin: EdgeInsets.all(7),
-                    color:
-                        Theme.of(context).colorScheme.surfaceContainerHighest,
-                    child: Column(
-                      children: [
-                        Text('BILL ID ${bill.billId}'),
-                        Text('Date ${bill.date}'),
-                        Text(
-                          'Amount: ${bill.amt}',
-                          style: TextStyle(fontSize: 20),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              "Bill staus:",
-                              style: TextStyle(fontSize: 15),
-                            ),
-                            (bill.status)
-                                ? (Text(
-                                    "PAID",
-                                    style: TextStyle(
-                                        color: Colors.green,
-                                        fontWeight: FontWeight.bold),
-                                  ))
-                                : (Text(
-                                    "UNPAID",
-                                    style: TextStyle(
-                                        color: Colors.red,
-                                        fontWeight: FontWeight.bold),
-                                  )),
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                    backgroundColor:
-                                        Color.fromARGB(255, 4, 116, 82)),
-                                onPressed: () async {
-                                  _firebaseService.changeBillStatus(bill).then((_) {
-                                    setState(() {
-                                      bill.status = true;
-                                    });
-                                  });
-                                },
-                                child: Text(
-                                  'Bill',
-                                  style: TextStyle(color: Colors.white),
-                                )),
-                                IconButton(onPressed: ()async{
-                                  
-                                }, icon: Icon(Icons.delete))
-                          ],
-                        ),
-                      ],
-                    ),
-                  );
-                });
+      body: ListView.builder(
+          itemCount: bills.length,
+          itemBuilder: (context, index) {
+            Bills bill = bills[index];
+            return Card(
+              elevation: 5,
+              margin: EdgeInsets.all(7),
+              color: Theme.of(context).colorScheme.surfaceContainerHighest,
+              child: Column(
+                children: [
+                  Text('BILL ID ${bill.billId}'),
+                  Text('Date ${bill.date}'),
+                  Text(
+                    'Amount: ${bill.amt}',
+                    style: TextStyle(fontSize: 20),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Bill staus:",
+                        style: TextStyle(fontSize: 15),
+                      ),
+                      (bill.status)
+                          ? (Text(
+                              "PAID",
+                              style: TextStyle(
+                                  color: Colors.green,
+                                  fontWeight: FontWeight.bold),
+                            ))
+                          : (Text(
+                              "UNPAID",
+                              style: TextStyle(
+                                  color: Colors.red,
+                                  fontWeight: FontWeight.bold),
+                            )),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: Color.fromARGB(255, 4, 116, 82)),
+                          onPressed: () async {
+                            _firebaseService.changeBillStatus(bill).then((_) {
+                              setState(() {
+                                getbills();
+                              });
+                            });
+                          },
+                          child: Text(
+                            'Bill',
+                            style: TextStyle(color: Colors.white),
+                          )),
+                      IconButton(
+                          style: IconButton.styleFrom(
+                              foregroundColor: Colors.white,
+                              backgroundColor: Colors.red,
+                              fixedSize: Size(70, 40)),
+                          onPressed: () async {
+                            _firebaseService.deleteBill(bill.billId!).then((_){
+                            setState(() {
+                              getbills();
+                            });});
+                          },
+                          icon: Icon(Icons.delete))
+                    ],
+                  ),
+                ],
+              ),
+            );
           }),
     );
   }

@@ -1,6 +1,7 @@
 class Worker {
   String? workerId;
   String name;
+  String role;
   String password;
   //String street;
 
@@ -8,6 +9,7 @@ class Worker {
     this.workerId,
     required this.name,
     required this.password,
+    required this.role,
     //required this.street
   });
 
@@ -16,6 +18,7 @@ class Worker {
     var map = <String, dynamic>{
       'name': name,
       'password': password,
+      'role' : role,
       //'street': street,
     };
     if (workerId != null) {
@@ -28,6 +31,7 @@ class Worker {
   Worker.fromMap(Map<String, dynamic> map)
       : workerId = map['id'],
         password = map['password'],
+        role = map['role'],
         name = map['name'];
   //street = map['street'];
 }

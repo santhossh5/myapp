@@ -11,16 +11,15 @@ class WorkerList extends StatefulWidget {
 
 class _WorkerListState extends State<WorkerList> {
   TextEditingController searchController = TextEditingController();
-  FirebaseService _firebaseService = new FirebaseService();
+  FirebaseService _firebaseService = FirebaseService();
   final _formkey = GlobalKey<FormState>();
-  List<Worker> workers = []; // Example worker list
+  List<Worker> workers = [];
   List<Worker> filteredWorkers = [];
 
   @override
   void initState() {
     super.initState();
     fetchWorkers();
-    filteredWorkers = workers;
   }
 
   Future<void> fetchWorkers() async {
@@ -43,10 +42,9 @@ class _WorkerListState extends State<WorkerList> {
     });
   }
 
-  void addWorker(String name, String password) {
-    // Add worker to the list (in a real app, you would also save to a database)
+  void addWorker(String name, String password, String role) {
     setState(() {
-      Worker worker = new Worker(name: name, password: password);
+      Worker worker = Worker(name: name, password: password, role: role);
       _firebaseService.addWorker(worker);
       workers.add(worker);
       filteredWorkers = workers;
@@ -54,94 +52,199 @@ class _WorkerListState extends State<WorkerList> {
   }
 
   void editWorker(Worker worker) {
-    setState(() {
-      _firebaseService.updateWorker(worker).then((_) {
-        fetchWorkers();
-      });
+    _firebaseService.updateWorker(worker).then((_) {
+      fetchWorkers();
     });
   }
 
   void showAddWorkerDialog() {
     String newName = '';
     String newPassword = '';
+    String newRole = 'Worker';
+    List<String> roles = ['Admin', 'Worker'];
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("Add New Worker"),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                onChanged: (value) {
-                  newName = value;
+        return SingleChildScrollView(
+          child: AlertDialog(
+            title: Text("Add New Worker"),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextField(
+                    onChanged: (value) {
+                      newName = value;
+                    },
+                    decoration: InputDecoration(
+                      labelText: "Name",
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextField(
+                    onChanged: (value) {
+                      newPassword = value;
+                    },
+                    obscureText: true,
+                    decoration: InputDecoration(
+                      labelText: "Password",
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: DropdownButtonFormField<String>(
+                    value: newRole,
+                    decoration: InputDecoration(
+                      labelText: "Role",
+                      border: OutlineInputBorder(),
+                    ),
+                    items: roles.map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                    onChanged: (String? value) {
+                      setState(() {
+                        newRole = value!;
+                      });
+                    },
+                  ),
+                ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
                 },
-                decoration: InputDecoration(labelText: "Name"),
+                child: Text("Cancel"),
               ),
-              TextField(
-                onChanged: (value) {
-                  newPassword = value;
+              TextButton(
+                onPressed: () {
+                  if (newName.isNotEmpty &&
+                      newPassword.isNotEmpty &&
+                      newRole.isNotEmpty) {
+                    addWorker(newName, newPassword, newRole);
+                  }
+                  Navigator.of(context).pop();
                 },
-                obscureText: true,
-                decoration: InputDecoration(labelText: "Password"),
+                style: TextButton.styleFrom(
+                  backgroundColor:
+                      Theme.of(context).colorScheme.primaryContainer,
+                ),
+                child: Text(
+                  "Add",
+                  
+                ),
               ),
             ],
           ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text("Cancel"),
-            ),
-            TextButton(
-              onPressed: () {
-                if (newName.isNotEmpty && newPassword.isNotEmpty) {
-                  addWorker(newName, newPassword);
-                }
-                Navigator.of(context).pop();
-              },
-              style: TextButton.styleFrom(
-                  backgroundColor:
-                      Theme.of(context).colorScheme.primaryContainer),
-              child: Text("Add"),
-            ),
-          ],
         );
       },
     );
   }
 
   void tapWorker(Worker selectedWorker) {
-    TextEditingController namecontroller =
-        new TextEditingController(text: selectedWorker.name);
-    TextEditingController passwordcontroller =
-        new TextEditingController(text: selectedWorker.password);
+    TextEditingController nameController =
+        TextEditingController(text: selectedWorker.name);
+    TextEditingController passwordController =
+        TextEditingController(text: selectedWorker.password);
+    String role = selectedWorker.role;
+    List<String> roles = ['Admin', 'Worker'];
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("Add New Worker"),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: namecontroller,
-                decoration: InputDecoration(labelText: "Name"),
+        return SingleChildScrollView(
+          child: AlertDialog(
+            title: Text("Edit Worker"),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextField(
+                    controller: nameController,
+                    decoration: InputDecoration(
+                      labelText: "Name",
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextField(
+                    controller: passwordController,
+                    obscureText: true,
+                    decoration: InputDecoration(
+                      labelText: "Password",
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: DropdownButtonFormField<String>(
+                    value: role,
+                    decoration: InputDecoration(
+                      labelText: "Role",
+                      border: OutlineInputBorder(),
+                    ),
+                    items: roles.map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                    onChanged: (String? value) {
+                      setState(() {
+                        role = value!;
+                      });
+                    },
+                  ),
+                ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text("Cancel"),
               ),
-              TextField(
-                controller: passwordcontroller,
-                obscureText: true,
-                decoration: InputDecoration(labelText: "Password"),
+              TextButton(
+                onPressed: () {
+                  selectedWorker.name = nameController.text;
+                  selectedWorker.password = passwordController.text;
+                  selectedWorker.role = role;
+                  if (selectedWorker.name.isNotEmpty &&
+                      selectedWorker.password.isNotEmpty &&
+                      selectedWorker.role.isNotEmpty) {
+                    editWorker(selectedWorker);
+                  }
+                  Navigator.of(context).pop();
+                },
+                style: TextButton.styleFrom(
+                  backgroundColor:
+                      Theme.of(context).colorScheme.primaryContainer,
+                ),
+                child: Text(
+                  "Save",
+                ),
               ),
-            ],
-          ),
-          actions: [
-            TextButton(
+              TextButton(
                 onPressed: () {
                   setState(() {
                     Navigator.pop(context);
-                    _firebaseService.deleteWorker(selectedWorker).then((_){
+                    _firebaseService.deleteWorker(selectedWorker).then((_) {
                       fetchWorkers();
                     });
                   });
@@ -150,29 +253,10 @@ class _WorkerListState extends State<WorkerList> {
                 child: Text(
                   "Delete",
                   style: TextStyle(color: Colors.white),
-                )),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text("Cancel"),
-            ),
-            TextButton(
-              onPressed: () {
-                selectedWorker.name = namecontroller.text;
-                selectedWorker.password = passwordcontroller.text;
-                if (selectedWorker.name.isNotEmpty &&
-                    selectedWorker.password.isNotEmpty) {
-                  editWorker(selectedWorker);
-                }
-                Navigator.of(context).pop();
-              },
-              style: TextButton.styleFrom(
-                  backgroundColor:
-                      Theme.of(context).colorScheme.primaryContainer),
-              child: Text("Save"),
-            ),
-          ],
+                ),
+              ),
+            ],
+          ),
         );
       },
     );
@@ -198,42 +282,48 @@ class _WorkerListState extends State<WorkerList> {
                     decoration: InputDecoration(
                       labelText: "Search",
                       border: OutlineInputBorder(),
+                      prefixIcon: Icon(Icons.search),
                     ),
                   ),
                 ),
-                IconButton(
-                  icon: Icon(Icons.add),
-                  style: IconButton.styleFrom(
-                      backgroundColor:
-                          Theme.of(context).colorScheme.primaryContainer),
+                SizedBox(width: 10),
+                ElevatedButton(
                   onPressed: showAddWorkerDialog,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor:
+                        Theme.of(context).colorScheme.primaryContainer,
+                  ),
+                  child: Icon(Icons.add),
                 ),
               ],
             ),
           ),
           ListTile(
-            title: Text("Name"),
-            trailing: Text(
-              "Password",
-              style: TextStyle(fontSize: 15),
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Expanded(child: Text("Name")),
+                Expanded(child: Text("Role")),
+                Expanded(child: Text("Password")),
+              ],
             ),
           ),
-          Divider(
-            indent: 10,
-            endIndent: 10,
-            height: 5,
-          ),
+          Divider(),
           Expanded(
             child: ListView.builder(
               itemCount: filteredWorkers.length,
               itemBuilder: (context, index) {
                 return ListTile(
-                    title: Text("${filteredWorkers[index].name}"),
-                    trailing: Text(
-                      "${filteredWorkers[index].password}",
-                      style: TextStyle(fontSize: 15),
-                    ),
-                    onTap: () => tapWorker(filteredWorkers[index]));
+                  title: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Expanded(child: Text(filteredWorkers[index].name)),
+                      Expanded(child: Text(filteredWorkers[index].role)),
+                      Expanded(child: Text(filteredWorkers[index].password)),
+                    ],
+                  ),
+                  onTap: () => tapWorker(filteredWorkers[index]),
+                );
               },
             ),
           ),

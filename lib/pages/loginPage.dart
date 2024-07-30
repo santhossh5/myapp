@@ -47,7 +47,7 @@ class _LoginPageState extends State<LoginPage> {
                 controller: namecontroller,
                 decoration: const InputDecoration(
                   labelText: 'Name',
-                  border: OutlineInputBorder(),
+                  //border: OutlineInputBorder(),
                 ),
               ),
               SizedBox(
@@ -64,7 +64,7 @@ class _LoginPageState extends State<LoginPage> {
                 obscureText: true,
                 decoration: const InputDecoration(
                   labelText: 'Password',
-                  border: OutlineInputBorder(),
+                  //border: OutlineInputBorder(),
                 ),
               ),
               SizedBox(
@@ -93,21 +93,25 @@ class _LoginPageState extends State<LoginPage> {
   void btn_clidked() {
     String name = namecontroller.text;
     String password = passwordcontroller.text;
-    if (name == "admin" && password == "admin") {
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => myHome()));
-      return;
-    }
+    // if (name == "admin" && password == "admin") {
+    //   Navigator.push(
+    //       context, MaterialPageRoute(builder: (context) => myHome()));
+    //   return;
+    // }
     Worker? isValid = workers.firstWhere(
       (worker) => worker.name == name && worker.password == password,
       orElse: () => Worker(
           name: '',
+          role: '',
           password: ''), // Return an empty Worker instance if not found
     );
-
     if (isValid.name.isNotEmpty && isValid.password.isNotEmpty) {
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => myHome()));
+          context,
+          MaterialPageRoute(
+              builder: (context) => myHome(
+                    worker: isValid,
+                  )));
     } else {
       showDialog(
         context: context,

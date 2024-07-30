@@ -29,8 +29,8 @@ class _selectStreetState extends State<selectStreet> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('Select the area:'),
               DropdownMenu(
+                label: Text("Area"),
                 initialSelection: areacontroller,
                 expandedInsets: EdgeInsets.all(1),
                 //errorText: 'please select',
@@ -50,13 +50,13 @@ class _selectStreetState extends State<selectStreet> {
                 },
               ),
               Padding(padding: EdgeInsets.all(5)),
-              Text('Select the Street:'),
               if (sError == 1)
                 Text(
                   'required!',
                   style: TextStyle(color: Colors.red),
                 ),
               DropdownMenu(
+                label: Text("Street"),
                 initialSelection: streetcontroller,
                 expandedInsets: EdgeInsets.all(1),
                 dropdownMenuEntries:

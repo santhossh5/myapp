@@ -48,7 +48,10 @@ class _listUsersState extends State<listUsers> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text('Customer ID: ${customer.cusId}'),
+                                  Text(
+                                    'Customer ID: ${customer.cusId!.length > 18 ? customer.cusId!.substring(0, 5) + '...' : customer.cusId}',
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
                                   Text(
                                     customer.name,
                                     style: TextStyle(fontSize: 25),
@@ -74,7 +77,8 @@ class _listUsersState extends State<listUsers> {
                                   ElevatedButton(
                                       onPressed: () async {
                                         setState(() {
-                                          _firebaseService.addBill(customer.cusId!, 111);
+                                          _firebaseService.addBill(
+                                              customer.cusId!, 111);
                                         });
                                       },
                                       child: Text('Add Bills')),
@@ -112,17 +116,19 @@ class _listUsersState extends State<listUsers> {
                                                         });
                                                       },
                                                       child: Text('cancel')),
-                                                  SizedBox(width: 3,),
+                                                  SizedBox(
+                                                    width: 3,
+                                                  ),
                                                   TextButton(
                                                       style:
                                                           TextButton.styleFrom(
                                                               backgroundColor:
                                                                   Colors.red),
-                                                      onPressed: () async{
-                                                          await _firebaseService
-                                                              .deleteCustomer(
-                                                                  customer
-                                                                      .cusId!);
+                                                      onPressed: () async {
+                                                        await _firebaseService
+                                                            .deleteCustomer(
+                                                                customer
+                                                                    .cusId!);
                                                         setState(() {
                                                           Navigator.of(context)
                                                               .pop();

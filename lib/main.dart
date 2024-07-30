@@ -39,14 +39,26 @@ class MyApp extends StatelessWidget {
         //
         // This works for code too, not just values: Most code changes can be
         // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.tealAccent),
+        colorScheme: const ColorScheme(
+  primary: Color(0xFF004D40), // A deep teal color for the primary elements
+  primaryContainer: Color(0xFF00796B), // A lighter teal for containers
+  secondary: Color(0xFF8E24AA), // A rich purple for secondary elements
+  secondaryContainer: Color(0xFFBA68C8), // A lighter purple for secondary containers
+  surface: Colors.white, // White for surfaces
+  error: Color(0xFFD32F2F), // A strong red for error states
+  onPrimary: Colors.white, // White text on primary elements
+  onSecondary: Colors.white, // White text on secondary elements
+  onSurface: Colors.black, // Black text on surface elements
+  onError: Colors.white, // White text on error elements
+  brightness: Brightness.light, // Light theme
+),
         useMaterial3: true,
       ),
       home: LoginPage(),
-      routes: {
-        '/homepage': (context) => const myHome(),
-        '/selectstreet': (context) => const selectStreet(),
-      },
+      // routes: {
+      //   '/homepage': (context) => const myHome(),
+      //   '/selectstreet': (context) => const selectStreet(),
+      // },
     );
   }
 }
